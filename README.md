@@ -43,7 +43,9 @@ entities:
 TODO
 
 ## TODO
-- [ ] Support scenes
+- [ ] Support scenes, input_booleans, automations, scripts, etc.
+- [ ] Allow the user to customize menu order, dividers, submenus
+- [ ] Pull entity icon and place on menu item 
 - [x] Allow hot reloading of config
 - [ ] Infer domain from websocket messages
 - [ ] Refactor haws to make use of HA's message id system
