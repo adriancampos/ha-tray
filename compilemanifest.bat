@@ -1,1 +1,1 @@
-rsrc -manifest ha-taskbar.manifest -o rsrc.syso
+rsrc -manifest ha-tray.manifest -o rsrc.syso

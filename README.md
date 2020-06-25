@@ -1,11 +1,11 @@
-# HA Taskbar
+# HA Tray
 
-A taskbar app to toggle Home Assistant entities.  
+A system tray app to toggle Home Assistant entities.  
 Currently supports turning available switches, lights and input_boolean's on and off. 
 
 
 ## Installation
-Grab the latest executable from [Releases](https://github.com/adriancampos/ha-taskbar/releases). I've only built and tested a Windows binary. More to come in the future. For the time being, please build the project if you're on another platform. 
+Grab the latest executable from [Releases](https://github.com/adriancampos/ha-tray/releases). I've only built and tested a Windows binary. More to come in the future. For the time being, please build the project if you're on another platform. 
 
 
 ## Setup
@@ -49,5 +49,5 @@ TODO
 - [x] Allow hot reloading of config
 - [ ] Infer domain from websocket messages
 - [ ] Refactor haws to make use of HA's message id system
-- [ ] Optional light/dark icon to match taskbar aesthetic
+- [ ] Optional light/dark icon to match tray aesthetic
 - [ ] Better error checking for config

@@ -12,9 +12,9 @@ package main
 import (
 	"log"
 
-	"github.com/adriancampos/ha-taskbar/config"
-	"github.com/adriancampos/ha-taskbar/haws"
-	"github.com/adriancampos/ha-taskbar/icon"
+	"github.com/adriancampos/ha-tray/config"
+	"github.com/adriancampos/ha-tray/haws"
+	"github.com/adriancampos/ha-tray/icon"
 	"github.com/gen2brain/dlgs"
 	"github.com/getlantern/systray"
 	"github.com/google/go-cmp/cmp"

@@ -1,4 +1,4 @@
-module github.com/adriancampos/ha-taskbar
+module github.com/adriancampos/ha-tray
 
 go 1.14
 
