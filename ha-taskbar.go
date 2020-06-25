@@ -17,28 +17,29 @@ import (
 	"github.com/adriancampos/ha-taskbar/icon"
 	"github.com/gen2brain/dlgs"
 	"github.com/getlantern/systray"
+	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/browser"
 )
 
 var c *haws.Connection
-var conf *config.Config
 
-func main() {
-
-	// Load config
-	if _conf, err := config.LoadConfig("configuration.yaml"); err != nil {
-		dlgs.Warning("Invalid Configuration", "configuration.yaml is either not found or invalid:\n"+err.Error())
-		log.Fatalln(err)
-	} else {
-		conf = _conf
-	}
+type entityItem struct {
+	menuItem *systray.MenuItem
+	entityID string
+	onClick  func()
+}
 
 var userEntityItems []entityItem
+
+func main() {
 	systray.Run(onReady, nil)
 	log.Println("Finished main(); exiting")
 }
 
 func onReady() {
+
+	var conf *config.Config
+
 	systray.SetTemplateIcon(icon.Data, icon.Data)
 	systray.SetTitle("HomeAssistant")
 
@@ -58,39 +59,10 @@ func onReady() {
 
 	systray.AddSeparator()
 
-	// Load entities
-
-	type MItem struct {
-		menuItem *systray.MenuItem
-		entityID string
-		onClick  func()
-	}
-
-	haEntities := make([]haws.ToggleableEntity, len(conf.ToggleableEntities))
-	for i, te := range conf.ToggleableEntities {
-		haEntities[i] = haws.ToggleableEntity{Domain: te.Domain, EntityID: te.EntityID}
-	}
-	log.Println("Loaded ToggleableEntities:", conf.ToggleableEntities)
-
-	userMenuItems := make([]MItem, len(haEntities))
-	for i, v := range haEntities {
-		v := v
-		i := i
-		userMenuItems[i] = MItem{
-			menuItem: systray.AddMenuItem(v.EntityID, "Toggle "+v.EntityID),
-			entityID: v.EntityID,
-			onClick: func() {
-				haws.ToggleDevice(c, v)
-
-				// To avoid UI flashes when the menu is next opened, assume that the toggle succeeded.
-				// If the assumption is incorrect, it'll be corrected through the haws subscription.
-				if userMenuItems[i].menuItem.Checked() {
-					userMenuItems[i].menuItem.Uncheck()
-				} else {
-					userMenuItems[i].menuItem.Check()
-				}
-			},
-		}
+	// Attempt to load config
+	if _conf, err := config.LoadConfig("configuration.yaml"); err == nil {
+		conf = _conf
+		loadFromConfig(conf)
 	}
 
 	// Listen for menu close events
@@ -109,6 +81,19 @@ func onReady() {
 			<-systray.MenuOpenedCh
 			log.Println("systray menu shown")
 
+			// Load config
+			if _conf, err := config.LoadConfig("configuration.yaml"); err != nil {
+				dlgs.Warning("Invalid Configuration", "configuration.yaml is either not found or invalid:\n"+err.Error())
+				log.Println(err)
+				continue
+			} else {
+				if _conf != nil && !cmp.Equal(_conf, conf) {
+					log.Println("Config changed!")
+					conf = _conf
+					loadFromConfig(conf)
+				}
+			}
+
 			// Close any preexisting connection
 			haws.Close(c)
 
@@ -117,17 +102,10 @@ func onReady() {
 				log.Println("Read error!")
 			})
 
-			// Handle clicks
-			for _, mItem := range userMenuItems {
+			// Subscribe to entity changes
+			for _, mItem := range userEntityItems {
 				mItem := mItem
-				go func(mItem MItem) {
-					for {
-						// TODO: Should I add a switch case here and listen for menu closed events so that I can return so that there aren't a bunch of new threads?
-						<-mItem.menuItem.ClickedCh
-						mItem.onClick()
-					}
-				}(mItem)
-
+				log.Println("subscribing to ", mItem.entityID)
 				haws.SubscribeToggleableEntity(c, mItem.entityID, func(te haws.ToggleableEntity) {
 					if te.State {
 						mItem.menuItem.Check()
@@ -142,4 +120,54 @@ func onReady() {
 
 		}
 	}()
+}
+
+func loadFromConfig(conf *config.Config) {
+	log.Println("Loading config: ", conf)
+	// Remove any existing menu items
+	for _, mItem := range userEntityItems {
+		// TODO: I'd like to remove instead of hide the menu items
+		mItem.menuItem.Disable()
+		mItem.menuItem.Hide()
+	}
+
+	// Load entities
+	haEntities := make([]haws.ToggleableEntity, len(conf.ToggleableEntities))
+	for i, te := range conf.ToggleableEntities {
+		haEntities[i] = haws.ToggleableEntity{Domain: te.Domain, EntityID: te.EntityID}
+	}
+	log.Println("Loaded ToggleableEntities:", conf.ToggleableEntities)
+
+	// Define Menu Items
+	userEntityItems = make([]entityItem, len(haEntities))
+	for i, v := range haEntities {
+		v := v
+		i := i
+		userEntityItems[i] = entityItem{
+			menuItem: systray.AddMenuItem(v.EntityID, "Toggle "+v.EntityID),
+			entityID: v.EntityID,
+			onClick: func() {
+				haws.ToggleDevice(c, v)
+
+				// To avoid UI flashes when the menu is next opened, assume that the toggle succeeded.
+				// If the assumption is incorrect, it'll be corrected through the haws subscription.
+				if userEntityItems[i].menuItem.Checked() {
+					userEntityItems[i].menuItem.Uncheck()
+				} else {
+					userEntityItems[i].menuItem.Check()
+				}
+			},
+		}
+	}
+
+	// Set up click listeners
+	for _, mItem := range userEntityItems {
+		mItem := mItem
+		go func(mItem entityItem) {
+			for {
+				<-mItem.menuItem.ClickedCh
+				mItem.onClick()
+			}
+		}(mItem)
+	}
 }

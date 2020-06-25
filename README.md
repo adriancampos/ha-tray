@@ -44,7 +44,7 @@ TODO
 
 ## TODO
 - [ ] Support scenes
-- [ ] Allow hot reloading of config
+- [x] Allow hot reloading of config
 - [ ] Infer domain from websocket messages
 - [ ] Refactor haws to make use of HA's message id system
 - [ ] Optional light/dark icon to match taskbar aesthetic
