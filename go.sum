@@ -2,6 +2,8 @@ github.com/adriancampos/systray v1.0.3-fork h1:YOgQtLrMZh44GDJAOasRaXPmecZcLQ88T
 github.com/adriancampos/systray v1.0.3-fork/go.mod h1:AecygODWIsBquJCJFop8MEQcJbWFfw/1yWbVabNgpCM=
 github.com/adriancampos/systray v1.0.3 h1:fYAL2sZRVR63k2QUy7Bucn+GF8SgEZZMoek7hNU3WNI=
 github.com/adriancampos/systray v1.0.3/go.mod h1:AecygODWIsBquJCJFop8MEQcJbWFfw/1yWbVabNgpCM=
+github.com/adriancampos/systray v1.0.4-fork h1:UR09K5+2wRrOJplvs13bCdJEALiExj7LrBfSV1RMUKs=
+github.com/adriancampos/systray v1.0.4-fork/go.mod h1:AecygODWIsBquJCJFop8MEQcJbWFfw/1yWbVabNgpCM=
 github.com/akavel/rsrc v0.8.0 h1:zjWn7ukO9Kc5Q62DOJCcxGpXC18RawVtYAGdz2aLlfw=
 github.com/akavel/rsrc v0.8.0/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
 github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29 h1:muXWUcay7DDy1/hEQWrYlBy+g0EuwT70sBHg65SeUc4=

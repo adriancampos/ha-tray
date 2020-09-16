@@ -10,7 +10,7 @@ require (
 	github.com/gen2brain/dlgs v0.0.0-20200211102745-b9c2664df42f
 	github.com/getlantern/appdir v0.0.0-20180320102544-7c0f9d241ea7 // indirect
 	github.com/getlantern/ops v0.0.0-20200403153110-8476b16edcd6 // indirect
-	github.com/getlantern/systray v1.0.3
+	github.com/getlantern/systray v1.0.4
 	github.com/getlantern/uuid v1.2.0 // indirect
 	github.com/google/go-cmp v0.5.0
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
@@ -27,4 +27,4 @@ require (
 )
 
 // Until the PR is accepted, use a fork of systray that supports menu open/close events
-replace github.com/getlantern/systray => github.com/adriancampos/systray v1.0.3-fork
+replace github.com/getlantern/systray => github.com/adriancampos/systray v1.0.4-fork
